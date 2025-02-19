@@ -1,7 +1,4 @@
 function EventBox(props) {
-  const [local] = splitProps(props, ['event'])
-  const issueData = createMemo(() => local.event.parsed)
-
   return (
     <article class="flex flex-col items-start justify-between">
       <A href={`/events/${local.event.number}`}>

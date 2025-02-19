@@ -1,21 +1,5 @@
-const destructBody = (body) => {
-  const urlRegex = new RegExp(/(((https?:\/\/)|(www\.))[^\s]+)/g)
-
-  const [content, link] = body.split('\r\n\r\n')
-  const [text] = link.split(':')
-  const href = link.match(urlRegex)[0]
-
-  return {
-    content: content,
-    linkText: text,
-    linkHref: href
-  }
-}
-
 function Announcement(props) {
-  const announcement = createMemo(() =>
-    destructBody(props.announcement().repository.discussions.nodes[0].body)
-  )
+  const announcement = {} // TODO
 
   return (
     <div class="relative isolate flex items-center gap-x-6 overflow-hidden bg-gray-50 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">

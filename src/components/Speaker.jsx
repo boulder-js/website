@@ -1,12 +1,9 @@
-import speakerQuery from '~/graphql/speaker.query'
-import graphql from '~/server/graphql'
 import { Show } from 'solid-js'
 import { GitHubIcon } from './SocialIcons'
 
 export default function Speaker(props) {
-  const [user] = graphql(speakerQuery.gql, {
-    login: props.person
-  })
+  // const [user] = graphql(speakerQuery.gql, { login: props.person })
+  const user = {} // TODO
 
   return (
     <Show when={user}>

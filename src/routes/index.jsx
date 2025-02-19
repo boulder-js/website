@@ -1,12 +1,10 @@
-import { For, splitProps, Show, Switch, Match, createMemo } from 'solid-js'
+import { For, splitProps } from 'solid-js'
 import { A, createAsync, query } from '@solidjs/router'
 import clsx from 'clsx'
 import { Container } from '~/components/Container'
 import { GitHubIcon, BlueSkyIcon, DiscordIcon } from '~/components/SocialIcons'
-import graphql from '~/server/graphql.js'
-import organizationQuery from '~/graphql/organization.query.js'
 import { H1, H2, H3 } from '~/components/Atomic'
-
+import { upcomingEvents } from '@gitevents/fetch'
 function Photos() {
   let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 
@@ -45,25 +43,17 @@ function SocialLink(props) {
   )
 }
 
-const organizationData = query(async () => {
+const getEvents = query(async () => {
   'use server'
+  return await upcomingEvents('boulder-js', 'events')
+}, 'events')
 
-  return graphql(organizationQuery.gql, organizationQuery.vars)
-  // return {
-  //   organization: {
-  //     name: 'BoulderJS'
-  //   }
-  // }
-}, 'organizationData')
-
-export const route = {
-  preload: () => organizationData()
-}
+export const route = { preload: () => getEvents() }
 
 export default function App() {
   // const readme = createAsync(() => readmeData())
-  // const events = createAsync(() => eventsData())
-  const organization = createAsync(() => organizationData())
+  const events = createAsync(() => getEvents())
+  const organization = () => {}
 
   return (
     <>
@@ -99,9 +89,10 @@ export default function App() {
       <Container class="bg-white py-24 sm:py-32">
         <H2>Upcoming Events</H2>
         <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-          {/* <For each={events()?.repository?.issues.nodes}>
-            {(node) => <EventBox event={node} />}
-          </For> */}
+          <For each={events()}>
+            {/* {(node) => <EventBox event={node} />} */}
+            {(node) => <H3>{node.title}</H3>}
+          </For>
         </div>
       </Container>
     </>

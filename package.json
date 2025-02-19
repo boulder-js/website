@@ -14,7 +14,6 @@
   "scripts": {
     "build": "vinxi build",
     "dev": "vinxi dev",
-    "gqlgen": "graphql-codegen --config codegen.yml",
     "lint": "eslint --fix . --ext .js --ext .ts --ext .tsx --ext md",
     "pretty": "prettier -l --write \"src/**/*.{js,ts,tsx,md,mdx,css,scss}\"",
     "start": "vinxi start",
@@ -48,41 +47,23 @@
     ]
   },
   "dependencies": {
-    "@octokit/auth-app": "^7.1.2",
-    "@octokit/core": "^6.1.2",
     "@solidjs/meta": "^0.29.4",
-    "@solidjs/router": "^0.15.1",
-    "@solidjs/start": "^1.0.10",
-    "@tailwindcss/typography": "^0.5.15",
+    "@solidjs/router": "^0.15.3",
+    "@solidjs/start": "^1.1.1",
+    "@tailwindcss/typography": "^0.5.16",
     "@zentered/issue-forms-body-parser": "^2.2.0",
     "clsx": "^2.1.1",
-    "graphql": "^16.9.0",
     "solid-heroicons": "^3.2.4",
-    "solid-js": "^1.9.3",
-    "solid-markdown": "^2.0.13",
-    "undici": "^6.20.1",
-    "vinxi": "^0.4.3",
-    "vite-plugin-solid-svg": "^0.8.1"
+    "solid-js": "^1.9.4",
+    "vinxi": "^0.5.3"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^19.5.0",
-    "@graphql-codegen/cli": "^5.0.3",
-    "@graphql-codegen/typed-document-node": "^5.0.11",
-    "@graphql-codegen/typescript": "^4.1.1",
-    "@graphql-codegen/typescript-operations": "^4.3.1",
-    "@graphql-typed-document-node/core": "^3.2.0",
+    "@tailwindcss/postcss": "^4.0.5",
+    "@commitlint/config-conventional": "^19.7.1",
     "@solidjs/testing-library": "^0.8.10",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.14.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-markdown": "^5.1.0",
-    "eslint-plugin-solid": "^0.14.3",
-    "lint-staged": "^15.2.10",
-    "prettier": "^3.3.3",
-    "tailwindcss": "^3.4.14",
-    "vite": "^5.4.11",
-    "vite-plugin-solid": "^2.10.2",
-    "wrangler": "^3.86.1"
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.5.1"
   },
   "engines": {
     "node": ">=20"
