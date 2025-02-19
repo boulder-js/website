@@ -86,12 +86,20 @@ export default function App() {
       </Container>
       <Photos />
       {/* <Stats organization={organization} /> */}
-      <Container class="bg-white py-24 sm:py-32">
+      <Container class="bg-white dark:bg-gray-500 py-24 sm:py-32">
         <H2>Upcoming Events</H2>
-        <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+        <div class="mx-auto">
           <For each={events()}>
             {/* {(node) => <EventBox event={node} />} */}
-            {(node) => <H3>{node.title}</H3>}
+            {(node) => (
+              <p>
+                <H3>
+                  {node.title} - {node.facets.date.date}
+                  <br />
+                  {node.talks.length} Talks!
+                </H3>
+              </p>
+            )}
           </For>
         </div>
       </Container>
