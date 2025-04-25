@@ -4,7 +4,7 @@ import clsx from 'clsx'
 import { Container } from '~/components/Container'
 import { GitHubIcon, BlueSkyIcon, DiscordIcon } from '~/components/SocialIcons'
 import { H1, H2, H3 } from '~/components/Atomic'
-import { upcomingEvents } from '@gitevents/fetch'
+import { upcomingEvents } from 'gitevents-fetch'
 function Photos() {
   let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 
