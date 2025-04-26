@@ -53,6 +53,7 @@ export const route = { preload: () => getEvents() }
 export default function App() {
   // const readme = createAsync(() => readmeData())
   const events = createAsync(() => getEvents())
+  console.log(events())
   const organization = () => {}
 
   return (
