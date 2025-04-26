@@ -31,6 +31,16 @@ features speakers, and provides community resources.
 - Select "Team Discussions" - Read only as Organization access
 - Request the token
 
+### Event / Talk / Member / Speaker Data
+
+All the data is pulled from the BoulderJS GitHub organization. We use a separate
+library to handle the GraphQL requests to the GitHub API:
+
+[GitEvents Fetch](https://github.com/gitevents/fetch)
+
+If you need additional data from GitHub, please open a PR to the GitEvents Fetch
+library.
+
 ### Environment Variables
 
 Copy `.env.example` to `.env` and fill in the `GH_PAT` variable with the token
