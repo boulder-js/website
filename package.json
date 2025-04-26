@@ -1,0 +1,73 @@
+{
+  "name": "@boulder-js/website",
+  "version": "1.0.0",
+  "description": "BoulderJS Website",
+  "bugs": {
+    "url": "https://github.com/boulder-js/website/issues"
+  },
+  "license": "MIT",
+  "author": "Patrick Heneise <patrick@zentered.co> (https://zentered.co)",
+  "contributors": [
+    "Patrick Heneise (https://github.com/PatrickHeneise)"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "vinxi build",
+    "dev": "vinxi dev",
+    "lint": "eslint --fix . --ext .js --ext .ts --ext .tsx --ext md",
+    "pretty": "prettier -l --write \"src/**/*.{js,ts,tsx,md,mdx,css,scss}\"",
+    "start": "vinxi start",
+    "test": "true"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.{ts,js,tsx,jsx,json,md,yaml}": [
+      "prettier --write"
+    ],
+    "*.{ts,js,tsx,jsx}": [
+      "eslint --cache --fix",
+      "npm run test related"
+    ],
+    "*.{ts,tsx}": [
+      "tsc-files --noEmit"
+    ]
+  },
+  "eslintIgnore": [
+    "/node_modules",
+    "/build",
+    "/public/build"
+  ],
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "dependencies": {
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.15.3",
+    "@solidjs/start": "^1.1.3",
+    "@tailwindcss/typography": "^0.5.16",
+    "@zentered/issue-forms-body-parser": "^2.2.0",
+    "clsx": "^2.1.1",
+    "gitevents-fetch": "^0.0.1-dev",
+    "solid-heroicons": "^3.2.4",
+    "solid-js": "^1.9.5",
+    "vinxi": "^0.5.4"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^19.8.0",
+    "@solidjs/testing-library": "^0.8.10",
+    "@tailwindcss/postcss": "^4.1.4",
+    "autoprefixer": "^10.4.21",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
+    "prettier": "^3.5.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,23 @@
+name: Unit Tests
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        required: false
+        default: lts/hydrogen
+jobs:
+  unit:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '${{ inputs.node-version }}'
+
+      - name: Install Node Modules
+        run: npm ci
+
+      - name: Unit Tests
+        run: npm run test

@@ -1,0 +1,31 @@
+name: Code Quality
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        required: false
+        default: lts/hydrogen
+
+jobs:
+  codequality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: 'npm'
+
+      - name: Install Node Modules
+        run: npm ci
+
+      - name: Prettier
+        run: npm run pretty
+
+      - name: Lint
+        run: npm run lint
+
+      # - name: Type check
+      #   run: pnpm typecheck
