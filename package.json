@@ -61,7 +61,7 @@
     "@commitlint/config-conventional": "^19.8.0",
     "@solidjs/testing-library": "^0.8.10",
     "@tailwindcss/typography": "^0.5.16",
-    "@tailwindcss/vite": "^4.0.7",
+    "@tailwindcss/vite": "^4.1.12",
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
     "husky": "^9.1.7",
