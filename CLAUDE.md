@@ -26,3 +26,4 @@ code in this repository.
 - Styles: Use TailwindCSS classes with clsx for conditionals
 - Imports: Framework imports first, then relative imports
 - Error handling: N/A (no specific pattern found)
+- use conventional commit
