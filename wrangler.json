@@ -2,5 +2,5 @@
   "name": "boulderjs-org",
   "compatibility_date": "2024-09-23",
   "compatibility_flags": ["nodejs_compat"],
-  "pages_build_output_dir": "dist"
+  "pages_build_output_dir": ".output/public"
 }

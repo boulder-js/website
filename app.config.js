@@ -5,10 +5,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  server: {
-    preset: 'cloudflare-pages',
-    rollupConfig: {
-      external: ['node:async_hooks']
-    }
-  }
+  ssr: false
 })

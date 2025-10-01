@@ -1,10 +1,9 @@
-import { For, splitProps } from 'solid-js'
-import { A, createAsync, query } from '@solidjs/router'
+import { For, splitProps, createSignal, onMount } from 'solid-js'
+import { A } from '@solidjs/router'
 import clsx from 'clsx'
 import { Container } from '~/components/Container'
 import { GitHubIcon, BlueSkyIcon, DiscordIcon } from '~/components/SocialIcons'
 import { H1, H2, H3 } from '~/components/Atomic'
-import { upcomingEvents } from 'gitevents-fetch'
 function Photos() {
   let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 
@@ -43,17 +42,19 @@ function SocialLink(props) {
   )
 }
 
-const getEvents = query(async () => {
-  'use server'
-  return await upcomingEvents('boulder-js', 'events')
-}, 'events')
-
-export const route = { preload: () => getEvents() }
-
 export default function App() {
-  // const readme = createAsync(() => readmeData())
-  const events = createAsync(() => getEvents())
-  console.log(events())
+  const [events, setEvents] = createSignal([])
+
+  onMount(async () => {
+    try {
+      const response = await fetch('/api/events')
+      const data = await response.json()
+      setEvents(data)
+    } catch (error) {
+      console.error('Failed to fetch events:', error)
+    }
+  })
+
   const organization = () => {}
 
   return (
