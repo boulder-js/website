@@ -2,6 +2,7 @@ import { defineConfig } from '@solidjs/start/config'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+  compatibilityDate: '2024-09-23',
   vite: {
     plugins: [tailwindcss()]
   },
@@ -19,13 +20,13 @@ export default defineConfig({
     }
   },
   nitro: {
+    compatibilityDate: '2024-09-23',
     cloudflare: {
       pages: {
         routes: {
           exclude: ['/build/*']
         }
       }
-    },
-    compatibilityDate: '2024-09-23'
+    }
   }
 })
