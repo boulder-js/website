@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { Container } from '../components/Container'
+import { GitHubIcon, BlueSkyIcon, DiscordIcon } from '../components/SocialIcons'
+import { H1, H2, H3 } from '../components/Atomic'
+import { upcomingEvents } from 'gitevents-fetch'
+
+// Server-side data fetching
+let events = []
+try {
+  events = await upcomingEvents('boulder-js', 'events')
+} catch (error) {
+  console.error('Failed to fetch events:', error)
+}
+
+const rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
+---
+
+<BaseLayout title="BoulderJS - Home">
+  <Container className="mt-9" client:load>
+    <div class="max-w-2xl">
+      <H1 client:load>{/* organization name */}BoulderJS</H1>
+      <div class="mt-6 flex gap-6">
+        <a href="https://github.com/boulder-js" aria-label="Follow on GitHub" class="group -m-1 p-1">
+          <GitHubIcon client:load className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
+        </a>
+        <a href="https://bsky.app/profile/boulderjs.org" aria-label="Follow on BlueSky" class="group -m-1 p-1">
+          <BlueSkyIcon client:load className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
+        </a>
+        <a href="https://chat.boulderjs.org" aria-label="Join on Discord" class="group -m-1 p-1">
+          <DiscordIcon client:load className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
+        </a>
+      </div>
+    </div>
+  </Container>
+
+  <!-- Photos -->
+  <div class="mt-16 sm:mt-20">
+    <div class="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <div class={`relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 sm:w-72 sm:rounded-2xl ${rotations[i]}`}>
+          <img
+            src={`/photos/feature/${i}.jpeg`}
+            alt="Featured event photo"
+            sizes="(min-width: 640px) 18rem, 11rem"
+            class="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Events -->
+  <Container className="bg-white dark:bg-gray-500 py-24 sm:py-32" client:load>
+    <H2 client:load>Upcoming Events</H2>
+    <div class="mx-auto">
+      {events.map((node) => (
+        <p>
+          <H3 client:load>
+            {node.title} - {node.facets.date.date}
+            <br />
+            {node.talks.length} Talks!
+          </H3>
+        </p>
+      ))}
+    </div>
+  </Container>
+</BaseLayout>

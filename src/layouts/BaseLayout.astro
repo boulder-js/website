@@ -1,0 +1,40 @@
+---
+import { Header } from '../components/Header'
+import { Footer } from '../components/Footer'
+import '../app.css'
+
+interface Props {
+  title?: string
+}
+
+const { title = 'BoulderJS - Home' } = Astro.props
+---
+
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+
+    <!-- Twitter Card -->
+    <meta name="twitter:image:src" content="https://opengraph.githubassets.com/a062ab265117a44e5479396add57906d85de72b4dd278127be810c33e00768cf/solidjs/solid-docs-next" />
+    <meta name="twitter:site" content="@github" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="solid-docs-next/md.tsx at tutorial-revision · solidjs/solid-docs-next" />
+    <meta name="twitter:description" content="Solid Docs, rehauled. Very much in progress. Contribute to solidjs/solid-docs-next development by creating an account on GitHub." />
+
+    <!-- Open Graph -->
+    <meta property="og:image" content="https://opengraph.githubassets.com/a062ab265117a44e5479396add57906d85de72b4dd278127be810c33e00768cf/solidjs/solid-docs-next" />
+    <meta property="og:image:alt" content="Solid Docs, rehauled. Very much in progress. Contribute to solidjs/solid-docs-next development by creating an account on GitHub." />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="600" />
+    <meta property="og:site_name" content="GitHub" />
+  </head>
+  <body class="h-full bg-zinc-50 dark:bg-black">
+    <Header client:load />
+    <slot />
+    <Footer client:load />
+  </body>
+</html>
