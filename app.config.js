@@ -7,6 +7,14 @@ export default defineConfig({
   },
   server: {
     preset: 'cloudflare-pages',
+    cloudflare: {
+      pages: {
+        routes: {
+          exclude: ['/build/*']
+        }
+      }
+    },
+    compatibility_date: '2024-09-23',
     rollupConfig: {
       external: [
         'node:async_hooks',
