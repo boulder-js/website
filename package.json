@@ -50,7 +50,7 @@
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.9",
     "@astrojs/solid-js": "^5.1.1",
-    "@cloudflare/workers-types": "^4.20251004.0",
+    "@cloudflare/workers-types": "^4.20251014.0",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.3",
     "@solidjs/start": "^1.2.0",
