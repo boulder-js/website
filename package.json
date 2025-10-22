@@ -59,6 +59,7 @@
     "gitevents-fetch": "^0.0.2-dev",
     "solid-heroicons": "^3.2.4",
     "solid-js": "^1.9.9",
+    "solid-markdown": "^2.0.14",
     "vinxi": "^0.5.8"
   },
   "devDependencies": {

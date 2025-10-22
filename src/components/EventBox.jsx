@@ -1,21 +1,40 @@
-function EventBox(props) {
+import { Switch, Match, splitProps } from 'solid-js'
+import { A } from '@solidjs/router'
+import { H3 } from './Atomic'
+
+function formatDate(dateString) {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
+
+export default function EventBox(props) {
+  const [local] = splitProps(props, ['event'])
+
   return (
     <article class="flex flex-col items-start justify-between">
       <A href={`/events/${local.event.number}`}>
         <div class="relative w-full">
           <Switch>
-            <Match when={issueData()['featured-image']?.images?.[0]}>
+            <Match when={local.event.facets?.['featured-image']?.images?.[0]}>
               <img
-                src={issueData()['featured-image']?.images?.[0]?.src}
-                alt={issueData()['featured-image']?.images?.[0]?.alt}
+                src={local.event.facets['featured-image'].images[0].src}
+                alt={
+                  local.event.facets['featured-image'].images[0].alt ||
+                  local.event.title
+                }
                 class="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
               />
             </Match>
-            <Match when={!issueData()['featured-image']?.images?.[0]}>
+            <Match when={!local.event.facets?.['featured-image']?.images?.[0]}>
               <img
                 src="/assets/boulderjs-logo.png"
                 alt="BoulderJS Logo"
-                class="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-contain sm:aspect-[2/1] lg:aspect-[3/2]"
+                class="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-contain p-8 sm:aspect-[2/1] lg:aspect-[3/2]"
               />
             </Match>
           </Switch>
@@ -24,33 +43,23 @@ function EventBox(props) {
       </A>
       <div class="max-w-xl">
         <div class="mt-8 flex items-center gap-x-4 text-xs">
-          <time dateTime={issueData().date.date} class="text-gray-500">
-            {issueData().date.date}
+          <time
+            dateTime={local.event.facets?.date?.date}
+            class="text-gray-500 dark:text-gray-400"
+          >
+            {formatDate(local.event.facets?.date?.date)}
           </time>
         </div>
         <div class="group relative">
           <H3>
-            <a href={local.event.href}>
-              <span class="absolute inset-0" />
-              <A href={`/events/${local.event.number}`}>{local.event.title}</A>
-            </a>
+            <A
+              href={`/events/${local.event.number}`}
+              class="hover:text-teal-600 dark:hover:text-teal-400"
+            >
+              {local.event.title}
+            </A>
           </H3>
         </div>
-        {/* <div class="relative mt-8 flex items-center gap-x-4">
-          <img
-            src={props.event.author.imageUrl}
-            alt=""
-            class="h-10 w-10 rounded-full bg-gray-100"
-          />
-          <div class="text-sm leading-6">
-            <p class="font-semibold text-gray-900">
-              <a href={props.event.author.href}>
-                <span class="absolute inset-0" />
-                {props.event.author.name}
-              </a>
-            </p>
-          </div>
-        </div> */}
       </div>
     </article>
   )

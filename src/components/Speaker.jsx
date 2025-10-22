@@ -1,32 +1,76 @@
-import { Show } from 'solid-js'
+import { Show, createSignal, onMount } from 'solid-js'
 import { GitHubIcon } from './SocialIcons'
 
 export default function Speaker(props) {
-  // const [user] = graphql(speakerQuery.gql, { login: props.person })
-  const user = {} // TODO
+  const [user, setUser] = createSignal(null)
+  const [loading, setLoading] = createSignal(true)
+  const [error, setError] = createSignal(null)
+
+  onMount(async () => {
+    if (!props.login) {
+      setError('No login provided')
+      setLoading(false)
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/speaker/${props.login}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch speaker data')
+      }
+      const data = await response.json()
+      setUser(data)
+      setLoading(false)
+    } catch (err) {
+      setError(err.message)
+      setLoading(false)
+    }
+  })
 
   return (
-    <Show when={user}>
-      <img
-        class="aspect-[4/5] w-52 flex-none rounded-2xl object-cover"
-        src={user().user.avatarUrl}
-        alt=""
-      />
+    <Show
+      when={!loading() && !error() && user()}
+      fallback={
+        <Show when={loading()}>
+          <div class="text-sm text-zinc-500 dark:text-zinc-400">
+            Loading speaker info...
+          </div>
+        </Show>
+      }
+    >
+      <div class="flex gap-4 items-start mt-4 p-4 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+        <img
+          class="w-16 h-16 rounded-full object-cover flex-shrink-0"
+          src={user().avatarUrl}
+          alt={user().name}
+        />
 
-      <div class="max-w-xl flex-auto">
-        <h3 class="text-lg font-semibold leading-8 tracking-tight text-gray-900">
-          {user().user.name}
-        </h3>
-        {/* <p class="text-base leading-7 text-gray-600">{person.role}</p> */}
-        <p class="mt-6 text-base leading-7 text-gray-600">{user().user.bio}</p>
-        <ul role="list" class="mt-6 flex gap-x-6">
-          <li>
-            <a href={user().user.url} class="text-gray-400 hover:text-gray-500">
-              <span class="sr-only">GitHub</span>
-              <GitHubIcon class="w-5 h-5" />
+        <div class="flex-1 min-w-0">
+          <h4 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+            {user().name}
+          </h4>
+          <Show when={user().bio}>
+            <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+              {user().bio}
+            </p>
+          </Show>
+          <div class="mt-2 flex items-center gap-4 text-sm">
+            <Show when={user().location}>
+              <span class="text-zinc-500 dark:text-zinc-400">
+                📍 {user().location}
+              </span>
+            </Show>
+            <a
+              href={user().url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 inline-flex items-center gap-1"
+            >
+              <GitHubIcon class="w-4 h-4" />
+              GitHub
             </a>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     </Show>
   )

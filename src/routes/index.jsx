@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import { Container } from '~/components/Container'
 import { GitHubIcon, BlueSkyIcon, DiscordIcon } from '~/components/SocialIcons'
 import { H1, H2, H3 } from '~/components/Atomic'
+import EventBox from '~/components/EventBox'
 function Photos() {
   let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 
@@ -90,18 +91,9 @@ export default function App() {
       {/* <Stats organization={organization} /> */}
       <Container class="bg-white dark:bg-gray-500 py-24 sm:py-32">
         <H2>Upcoming Events</H2>
-        <div class="mx-auto">
+        <div class="mx-auto grid grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3">
           <For each={events()}>
-            {/* {(node) => <EventBox event={node} />} */}
-            {(node) => (
-              <p>
-                <H3>
-                  {node.title} - {node.facets.date.date}
-                  <br />
-                  {node.talks.length} Talks!
-                </H3>
-              </p>
-            )}
+            {(node) => <EventBox event={node} />}
           </For>
         </div>
       </Container>
