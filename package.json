@@ -12,6 +12,7 @@
   ],
   "type": "module",
   "scripts": {
+    "pw": "playwright install",
     "build": "astro build",
     "dev": "astro dev",
     "preview": "astro preview",
@@ -48,30 +49,25 @@
     ]
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.9",
-    "@astrojs/solid-js": "^5.1.1",
-    "@cloudflare/workers-types": "^4.20251004.0",
-    "@solidjs/meta": "^0.29.4",
-    "@solidjs/router": "^0.15.3",
-    "@solidjs/start": "^1.2.0",
+    "@astrojs/cloudflare": "^12.6.10",
+    "@astrojs/solid-js": "^5.1.2",
     "@zentered/issue-forms-body-parser": "^2.2.0",
-    "astro": "^5.14.1",
-    "gitevents-fetch": "^0.0.2-dev",
-    "solid-heroicons": "^3.2.4",
-    "solid-js": "^1.9.9",
-    "vinxi": "^0.5.8"
+    "astro": "^5.15.2",
+    "gitevents-fetch": "^0.0.3-dev",
+    "solid-js": "^1.9.10"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
+    "@playwright/test": "^1.56.1",
     "@solidjs/testing-library": "^0.8.10",
     "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.1.13",
+    "@tailwindcss/vite": "^4.1.16",
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.3",
+    "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
-    "tailwindcss": "^4.1.13"
+    "tailwindcss": "^4.1.16"
   },
   "engines": {
     "node": ">=20"

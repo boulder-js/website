@@ -20,3 +20,5 @@ dist
 .wrangler
 .dev.vars
 .claude
+.playwright-mcp
+keynote-js/

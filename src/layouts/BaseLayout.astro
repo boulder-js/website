@@ -19,22 +19,22 @@ const { title = 'BoulderJS - Home' } = Astro.props
     <title>{title}</title>
 
     <!-- Twitter Card -->
-    <meta name="twitter:image:src" content="https://opengraph.githubassets.com/a062ab265117a44e5479396add57906d85de72b4dd278127be810c33e00768cf/solidjs/solid-docs-next" />
-    <meta name="twitter:site" content="@github" />
+    <meta name="twitter:site" content="@boulderjs" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="solid-docs-next/md.tsx at tutorial-revision · solidjs/solid-docs-next" />
-    <meta name="twitter:description" content="Solid Docs, rehauled. Very much in progress. Contribute to solidjs/solid-docs-next development by creating an account on GitHub." />
+    <meta name="twitter:title" content="BoulderJS - JavaScript Meetup in Boulder, Colorado" />
+    <meta name="twitter:description" content="Join the Boulder JavaScript community for meetups, talks, and networking events." />
 
     <!-- Open Graph -->
-    <meta property="og:image" content="https://opengraph.githubassets.com/a062ab265117a44e5479396add57906d85de72b4dd278127be810c33e00768cf/solidjs/solid-docs-next" />
-    <meta property="og:image:alt" content="Solid Docs, rehauled. Very much in progress. Contribute to solidjs/solid-docs-next development by creating an account on GitHub." />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="600" />
-    <meta property="og:site_name" content="GitHub" />
+    <meta property="og:title" content="BoulderJS - JavaScript Meetup in Boulder, Colorado" />
+    <meta property="og:description" content="Join the Boulder JavaScript community for meetups, talks, and networking events." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="BoulderJS" />
   </head>
-  <body class="h-full bg-zinc-50 dark:bg-black">
-    <Header client:load />
-    <slot />
-    <Footer client:load />
+  <body class="flex min-h-full bg-white dark:bg-black">
+    <div class="flex w-full flex-col">
+      <Header client:load />
+      <slot />
+      <Footer client:load />
+    </div>
   </body>
 </html>

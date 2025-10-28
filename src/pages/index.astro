@@ -1,68 +1,701 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { Container } from '../components/Container'
-import { GitHubIcon, BlueSkyIcon, DiscordIcon } from '../components/SocialIcons'
-import { H1, H2, H3 } from '../components/Atomic'
-import { upcomingEvents } from 'gitevents-fetch'
+import { BackgroundImage } from '../components/BackgroundImage'
+import { fetchUpcomingEvents, fetchPastEvents, getSpeakers, fetchTeamMembers } from '../lib/events.js'
 
-// Server-side data fetching
+// Server-side data fetching using gitevents-fetch
 let events = []
+let pastEvents = []
+let speakers = []
+let advocates = []
+let members = []
+
 try {
-  events = await upcomingEvents('boulder-js', 'events')
+  // Fetch from GitHub using gitevents-fetch package
+  events = await fetchUpcomingEvents()
+  pastEvents = await fetchPastEvents()
+  speakers = getSpeakers(events)
+  advocates = await fetchTeamMembers('boulder-js', 'advocates')
+  members = await fetchTeamMembers('boulder-js', 'members')
+  console.log(`Fetched ${events.length} upcoming events, ${pastEvents.length} past events, ${speakers.length} speakers, ${advocates.length} advocates, and ${members.length} members`)
 } catch (error) {
   console.error('Failed to fetch events:', error)
 }
-
-const rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 ---
 
-<BaseLayout title="BoulderJS - Home">
-  <Container className="mt-9" client:load>
-    <div class="max-w-2xl">
-      <H1 client:load>{/* organization name */}BoulderJS</H1>
-      <div class="mt-6 flex gap-6">
-        <a href="https://github.com/boulder-js" aria-label="Follow on GitHub" class="group -m-1 p-1">
-          <GitHubIcon client:load className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
-        </a>
-        <a href="https://bsky.app/profile/boulderjs.org" aria-label="Follow on BlueSky" class="group -m-1 p-1">
-          <BlueSkyIcon client:load className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
-        </a>
-        <a href="https://chat.boulderjs.org" aria-label="Join on Discord" class="group -m-1 p-1">
-          <DiscordIcon client:load className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
-        </a>
-      </div>
-    </div>
-  </Container>
-
-  <!-- Photos -->
-  <div class="mt-16 sm:mt-20">
-    <div class="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-      {[0, 1, 2, 3, 4].map((i) => (
-        <div class={`relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 sm:w-72 sm:rounded-2xl ${rotations[i]}`}>
-          <img
-            src={`/photos/feature/${i}.jpeg`}
-            alt="Featured event photo"
-            sizes="(min-width: 640px) 18rem, 11rem"
-            class="absolute inset-0 h-full w-full object-cover"
-          />
+<BaseLayout title="BoulderJS - JavaScript Meetup in Boulder, Colorado">
+  <!-- Hero Section -->
+  <div class="relative py-20 sm:pt-36 sm:pb-24">
+    <BackgroundImage className="-top-36 -bottom-14" client:load />
+    <!-- Hero Content -->
+    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-2xl lg:max-w-4xl lg:px-12">
+        <h1 class="text-5xl font-bold tracking-tighter text-blue-600 sm:text-7xl">
+          <span class="sr-only">BoulderJS - </span>JavaScript Meetup in Boulder, Colorado
+        </h1>
+        <div class="mt-6 space-y-6 text-2xl tracking-tight text-blue-900">
+          <p>
+            Join the Boulder JavaScript community for monthly meetups featuring talks from local and visiting speakers, networking opportunities, and a chance to connect with fellow developers.
+          </p>
+          <p>
+            Whether you're just starting out or you're a seasoned pro, BoulderJS welcomes all skill levels. Come share your knowledge, learn something new, and be part of Colorado's thriving tech community.
+          </p>
         </div>
-      ))}
+
+        <!-- RSVP Button -->
+        <a
+          href="https://luma.com/boulderjs"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-10 inline-flex justify-center rounded-2xl bg-blue-600 px-8 py-4 text-base font-semibold text-white hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:text-white/70 transition-colors"
+        >
+          RSVP to Next Event
+        </a>
+
+        <!-- Stats -->
+        <dl class="mt-10 grid grid-cols-2 gap-x-10 gap-y-6 sm:mt-16 sm:gap-x-16 sm:gap-y-10 sm:text-center lg:auto-cols-auto lg:grid-flow-col lg:grid-cols-none lg:justify-start lg:text-left">
+          <div>
+            <dt class="font-mono text-sm text-blue-600">Schedule</dt>
+            <dd class="mt-0.5 text-2xl font-semibold tracking-tight text-blue-900">
+              Every 4th Thursday
+            </dd>
+          </div>
+          <div>
+            <dt class="font-mono text-sm text-blue-600">Location</dt>
+            <dd class="mt-0.5 text-2xl font-semibold tracking-tight text-blue-900">
+              Boulder, CO
+            </dd>
+          </div>
+        </dl>
+      </div>
     </div>
   </div>
 
-  <!-- Events -->
-  <Container className="bg-white dark:bg-gray-500 py-24 sm:py-32" client:load>
-    <H2 client:load>Upcoming Events</H2>
-    <div class="mx-auto">
-      {events.map((node) => (
-        <p>
-          <H3 client:load>
-            {node.title} - {node.facets.date.date}
-            <br />
-            {node.talks.length} Talks!
-          </H3>
-        </p>
-      ))}
+  <!-- Schedule Section -->
+  {events.length > 0 && (
+    <section id="schedule" aria-labelledby="schedule-title" class="py-20 sm:py-32 bg-indigo-50">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl lg:mx-0">
+          <h2
+            id="schedule-title"
+            class="text-4xl font-medium tracking-tighter text-blue-600 sm:text-5xl"
+          >
+            Upcoming Schedule
+          </h2>
+          <p class="mt-4 text-2xl tracking-tight text-blue-900">
+            Join us at our next meetup! We gather on the 4th Thursday of each month for talks and networking.
+          </p>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="mt-14 grid grid-cols-1 gap-8 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
+          {events.slice(0, 6).map((event) => (
+            <div class="flex flex-col">
+              <!-- Date Header -->
+              <h3 class="text-2xl font-semibold tracking-tight text-blue-900">
+                {event.date ? event.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) : 'TBA'}
+              </h3>
+              <p class="mt-4 text-base tracking-tight text-blue-900">
+                {event.title}
+              </p>
+
+              <!-- Speaker Cards -->
+              <div class="mt-10 space-y-8">
+                {event.speakers && event.speakers.length > 0 ? (
+                  event.speakers.map((speaker) => (
+                    <div class="relative flex flex-col rounded-3xl bg-white px-6 py-8 shadow-md shadow-gray-900/5 group/card">
+                      {speaker.avatarUrl && (
+                        <img
+                          src={speaker.avatarUrl}
+                          alt={speaker.name}
+                          class="absolute -top-4 left-6 h-14 w-14 rounded-xl object-cover transition-transform duration-300 group-hover/card:scale-105"
+                        />
+                      )}
+                      <h4 class="mt-8 text-base font-semibold tracking-tight text-slate-900">
+                        {speaker.name}
+                      </h4>
+                      <a
+                        href={speaker.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="mt-2 text-sm tracking-tight text-blue-900 hover:text-blue-600"
+                      >
+                        {speaker.talk}
+                      </a>
+                      {speaker.abstract && (
+                        <p class="mt-2 text-sm text-slate-600 line-clamp-2">
+                          {speaker.abstract}
+                        </p>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div class="relative flex flex-col rounded-3xl bg-white px-6 py-8 shadow-md shadow-gray-900/5">
+                    <p class="text-sm text-slate-600">
+                      Speakers TBA
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- RSVP CTA -->
+        <div class="mt-14 text-center">
+          <a
+            href="https://luma.com/boulderjs"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex justify-center rounded-2xl bg-blue-600 px-8 py-4 text-base font-semibold text-white hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:text-white/70 transition-colors"
+          >
+            RSVP to Next Event
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Speakers Section -->
+  {speakers.length > 0 && (
+    <section id="speakers" aria-labelledby="speakers-title" class="py-20 sm:py-32">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl lg:mx-0">
+          <h2
+            id="speakers-title"
+            class="text-4xl font-medium tracking-tighter text-blue-600 sm:text-5xl"
+          >
+            Upcoming Speakers
+          </h2>
+          <p class="mt-4 text-2xl tracking-tight text-blue-900">
+            Meet the talented developers and technologists sharing their knowledge with the Boulder JavaScript community.
+          </p>
+        </div>
+
+        <!-- Speakers Grid -->
+        <div class="mt-14 grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
+          {speakers.map((speaker) => (
+            <div class="group relative">
+              <div class="flex items-start gap-4">
+                <!-- Speaker Avatar -->
+                {speaker.avatarUrl ? (
+                  <img
+                    src={speaker.avatarUrl}
+                    alt={speaker.name}
+                    class="h-16 w-16 flex-none rounded-xl object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div class="h-16 w-16 flex-none rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                    <div class="text-xl font-bold text-blue-600">
+                      {speaker.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                    </div>
+                  </div>
+                )}
+
+                <div class="flex-auto">
+                  <!-- Speaker Info -->
+                  <h3 class="text-lg font-bold tracking-tight text-slate-900">
+                    {speaker.name}
+                  </h3>
+                  {speaker.githubUrl && (
+                    <a
+                      href={speaker.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-sm text-blue-600 hover:text-blue-500"
+                    >
+                      @{speaker.login}
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              <!-- Talks -->
+              {speaker.talks.map((talk) => (
+                <div class="mt-4 pl-20">
+                  <a
+                    href={talk.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group/talk"
+                  >
+                    <p class="text-base tracking-tight text-slate-900 font-medium group-hover/talk:text-blue-600">
+                      {talk.title}
+                    </p>
+                  </a>
+                  {talk.abstract && (
+                    <p class="mt-1 text-sm text-slate-600 line-clamp-2">
+                      {talk.abstract}
+                    </p>
+                  )}
+                  <p class="mt-1 text-sm text-slate-500">
+                    {talk.date}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Upcoming Events Section -->
+  {events.length > 3 && (
+    <section id="events" aria-labelledby="events-title" class="py-20 sm:py-32">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl lg:mx-0">
+          <h2
+            id="events-title"
+            class="text-4xl font-medium tracking-tighter text-blue-600 sm:text-5xl"
+          >
+            All Upcoming Events
+          </h2>
+          <p class="mt-4 text-2xl tracking-tight text-blue-900">
+            View our complete event schedule and join us for any of these upcoming meetups.
+          </p>
+        </div>
+
+        <!-- Events List -->
+        <div class="mt-14 space-y-8 sm:mt-16">
+          {events.map((event) => (
+            <div class="bg-white px-10 py-8 shadow-xl shadow-blue-900/5 backdrop-blur-sm rounded-2xl">
+              <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                <div class="flex-auto">
+                  <h3 class="text-2xl font-bold tracking-tight text-slate-900">
+                    {event.title}
+                  </h3>
+                  <p class="mt-2 text-lg tracking-tight text-blue-600">
+                    {event.dateString}
+                  </p>
+                </div>
+                <a
+                  href="https://luma.com/boulderjs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex-none inline-flex justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-500 transition-colors"
+                >
+                  RSVP
+                </a>
+              </div>
+
+              {event.speakers && event.speakers.length > 0 && (
+                <div class="mt-6">
+                  <p class="text-sm font-semibold text-blue-900 uppercase tracking-wide">
+                    {event.speakers.length} {event.speakers.length === 1 ? 'Talk' : 'Talks'}
+                  </p>
+                  <div class="mt-4 space-y-6">
+                    {event.speakers.map((speaker) => (
+                      <div class="flex gap-4 group/speaker">
+                        {speaker.avatarUrl && (
+                          <img
+                            src={speaker.avatarUrl}
+                            alt={speaker.name}
+                            class="h-12 w-12 flex-none rounded-xl object-cover transition-transform duration-300 group-hover/speaker:scale-105"
+                          />
+                        )}
+                        <div class="flex-auto">
+                          <a
+                            href={speaker.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="group/talk"
+                          >
+                            <p class="font-semibold text-slate-900 group-hover/talk:text-blue-600">
+                              {speaker.talk}
+                            </p>
+                          </a>
+                          <p class="mt-1 text-sm text-slate-600">
+                            by <span class="font-medium">{speaker.name}</span>
+                            {speaker.githubUrl && (
+                              <>
+                                {' · '}
+                                <a
+                                  href={speaker.githubUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  class="text-blue-600 hover:text-blue-500"
+                                >
+                                  @{speaker.login}
+                                </a>
+                              </>
+                            )}
+                          </p>
+                          {speaker.abstract && (
+                            <p class="mt-2 text-sm text-slate-600 line-clamp-3">
+                              {speaker.abstract}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <a
+                href={event.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-6 inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-500"
+              >
+                View Event Details on GitHub
+                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Past Events Section -->
+  {pastEvents.filter(e => e.speakers && e.speakers.length > 0).length > 0 && (
+    <section id="past-events" aria-labelledby="past-events-title" class="py-20 sm:py-32">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl lg:mx-0">
+          <h2
+            id="past-events-title"
+            class="text-4xl font-medium tracking-tighter text-blue-600 sm:text-5xl"
+          >
+            Past Events
+          </h2>
+          <p class="mt-4 text-2xl tracking-tight text-blue-900">
+            Check out what we've covered in previous BoulderJS meetups.
+          </p>
+        </div>
+
+        <!-- Past Events Grid -->
+        <div class="mt-14 grid grid-cols-1 gap-8 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
+          {pastEvents.filter(e => e.speakers && e.speakers.length > 0).slice(0, 6).map((event) => (
+            <div class="flex flex-col">
+              <!-- Date Header -->
+              <h3 class="text-2xl font-semibold tracking-tight text-blue-900">
+                {event.date ? event.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) : event.dateString}
+              </h3>
+              <p class="mt-4 text-base tracking-tight text-blue-900">
+                {event.title}
+              </p>
+
+              <!-- Speaker Cards -->
+              <div class="mt-10 space-y-8">
+                {event.speakers.map((speaker) => (
+                  <div class="relative flex flex-col rounded-3xl bg-white px-6 py-8 shadow-md shadow-gray-900/5 group/card">
+                    {speaker.avatarUrl && (
+                      <img
+                        src={speaker.avatarUrl}
+                        alt={speaker.name}
+                        class="absolute -top-4 left-6 h-14 w-14 rounded-xl object-cover transition-transform duration-300 group-hover/card:scale-105"
+                      />
+                    )}
+                    <h4 class="mt-8 text-base font-semibold tracking-tight text-slate-900">
+                      {speaker.name}
+                    </h4>
+                    <a
+                      href={speaker.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="mt-2 text-sm tracking-tight text-slate-700 hover:text-blue-600"
+                    >
+                      {speaker.talk}
+                    </a>
+                    {speaker.githubUrl && (
+                      <a
+                        href={speaker.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="mt-1 text-xs text-blue-600 hover:text-blue-500"
+                      >
+                        @{speaker.login}
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Advocates Section -->
+  {advocates.length > 0 && (
+    <section id="advocates" aria-labelledby="advocates-title" class="py-20 sm:py-32">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl lg:mx-0">
+          <h2
+            id="advocates-title"
+            class="text-4xl font-medium tracking-tighter text-blue-600 sm:text-5xl"
+          >
+            Our Advocates
+          </h2>
+          <p class="mt-4 text-2xl tracking-tight text-blue-900">
+            Meet the passionate community members who help organize and support BoulderJS events.
+          </p>
+        </div>
+
+        <!-- Advocates Grid -->
+        <div class="mt-14 grid grid-cols-1 gap-12 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {advocates.map((advocate) => (
+            <div class="group relative">
+              <div class="flex flex-col items-center text-center">
+                <!-- Avatar -->
+                {advocate.avatarUrl ? (
+                  <img
+                    src={advocate.avatarUrl}
+                    alt={advocate.name || advocate.login}
+                    class="h-32 w-32 rounded-2xl object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div class="h-32 w-32 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                    <div class="text-3xl font-bold text-blue-600">
+                      {(advocate.name || advocate.login).split(' ').map(n => n[0]).join('').substring(0, 2)}
+                    </div>
+                  </div>
+                )}
+
+                <!-- Name and Login -->
+                <div class="mt-6">
+                  <h3 class="text-lg font-bold tracking-tight text-slate-900">
+                    {advocate.name || advocate.login}
+                  </h3>
+                  {advocate.name && advocate.login && (
+                    <a
+                      href={`https://github.com/${advocate.login}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="mt-1 text-sm text-blue-600 hover:text-blue-500"
+                    >
+                      @{advocate.login}
+                    </a>
+                  )}
+                </div>
+
+                <!-- Bio -->
+                {advocate.bio && (
+                  <p class="mt-3 text-sm text-slate-600 line-clamp-3">
+                    {advocate.bio}
+                  </p>
+                )}
+
+                <!-- Location and Company -->
+                {(advocate.location || advocate.company) && (
+                  <div class="mt-3 flex flex-wrap gap-2 justify-center text-xs text-slate-500">
+                    {advocate.location && (
+                      <span class="flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {advocate.location}
+                      </span>
+                    )}
+                    {advocate.company && (
+                      <span class="flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        {advocate.company.replace('@', '')}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <!-- Social Links -->
+                {advocate.websiteUrl && (
+                  <div class="mt-4">
+                    <a
+                      href={advocate.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-sm text-blue-600 hover:text-blue-500 hover:underline"
+                    >
+                      Website
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Members Section -->
+  {members.length > 0 && (
+    <section id="members" aria-labelledby="members-title" class="py-16 sm:py-24 bg-gray-50">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl lg:mx-0">
+          <h2
+            id="members-title"
+            class="text-3xl font-medium tracking-tighter text-blue-600 sm:text-4xl"
+          >
+            Community Members
+          </h2>
+          <p class="mt-3 text-xl tracking-tight text-blue-900">
+            Active members of the BoulderJS community.
+          </p>
+        </div>
+
+        <!-- Members Grid -->
+        <div class="mt-10 grid grid-cols-2 gap-8 sm:mt-12 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          {members.map((member) => (
+            <div class="group relative">
+              <div class="flex flex-col items-center text-center">
+                <!-- Avatar -->
+                {member.avatarUrl ? (
+                  <a
+                    href={`https://github.com/${member.login}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={member.avatarUrl}
+                      alt={member.name || member.login}
+                      class="h-20 w-20 rounded-xl object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </a>
+                ) : (
+                  <div class="h-20 w-20 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                    <div class="text-xl font-bold text-blue-600">
+                      {(member.name || member.login).split(' ').map(n => n[0]).join('').substring(0, 2)}
+                    </div>
+                  </div>
+                )}
+
+                <!-- Name -->
+                <div class="mt-3">
+                  <a
+                    href={`https://github.com/${member.login}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group/name"
+                  >
+                    <h3 class="text-sm font-semibold tracking-tight text-slate-900 group-hover/name:text-blue-600 line-clamp-2">
+                      {member.name || member.login}
+                    </h3>
+                  </a>
+                  {member.name && member.login && (
+                    <p class="mt-1 text-xs text-slate-500">
+                      @{member.login}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Community Links -->
+  <section class="py-20 sm:py-32 bg-indigo-50">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-2xl lg:max-w-4xl">
+        <div class="text-center">
+          <h2 class="text-4xl font-medium tracking-tighter text-blue-600 sm:text-5xl">
+            Join the Community
+          </h2>
+          <p class="mt-4 text-2xl tracking-tight text-blue-900">
+            Connect with us on social media, join our Discord server, and stay up to date with the latest news and events.
+          </p>
+        </div>
+
+        <!-- Social Links Grid -->
+        <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="https://github.com/boulder-js"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-4 rounded-2xl bg-white px-6 py-4 shadow-md shadow-gray-900/5 transition hover:shadow-lg hover:shadow-gray-900/10"
+          >
+            <svg class="h-8 w-8 fill-slate-900" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+            <div class="flex-auto">
+              <p class="text-base font-semibold text-slate-900">GitHub</p>
+              <p class="text-sm text-slate-600">Follow our projects</p>
+            </div>
+          </a>
+
+          <a
+            href="https://bsky.app/profile/boulderjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-4 rounded-2xl bg-white px-6 py-4 shadow-md shadow-gray-900/5 transition hover:shadow-lg hover:shadow-gray-900/10"
+          >
+            <svg class="h-8 w-8 fill-blue-600" viewBox="0 0 24 24">
+              <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-13v6l5-3-5-3z"/>
+            </svg>
+            <div class="flex-auto">
+              <p class="text-base font-semibold text-slate-900">BlueSky</p>
+              <p class="text-sm text-slate-600">Latest updates</p>
+            </div>
+          </a>
+
+          <a
+            href="https://chat.boulderjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-4 rounded-2xl bg-white px-6 py-4 shadow-md shadow-gray-900/5 transition hover:shadow-lg hover:shadow-gray-900/10"
+          >
+            <svg class="h-8 w-8 fill-indigo-600" viewBox="0 0 24 24">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+            <div class="flex-auto">
+              <p class="text-base font-semibold text-slate-900">Discord</p>
+              <p class="text-sm text-slate-600">Join the conversation</p>
+            </div>
+          </a>
+
+          <a
+            href="https://www.linkedin.com/groups/12659214/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-4 rounded-2xl bg-white px-6 py-4 shadow-md shadow-gray-900/5 transition hover:shadow-lg hover:shadow-gray-900/10"
+          >
+            <svg class="h-8 w-8 fill-blue-700" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+            <div class="flex-auto">
+              <p class="text-base font-semibold text-slate-900">LinkedIn</p>
+              <p class="text-sm text-slate-600">Professional network</p>
+            </div>
+          </a>
+
+          <a
+            href="https://luma.com/boulderjs"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-4 rounded-2xl bg-white px-6 py-4 shadow-md shadow-gray-900/5 transition hover:shadow-lg hover:shadow-gray-900/10"
+          >
+            <svg class="h-8 w-8 fill-purple-600" viewBox="0 0 24 24">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/>
+            </svg>
+            <div class="flex-auto">
+              <p class="text-base font-semibold text-slate-900">Luma Calendar</p>
+              <p class="text-sm text-slate-600">RSVP to events</p>
+            </div>
+          </a>
+
+          <a
+            href="mailto:contact@boulderjs.org"
+            class="flex items-center gap-4 rounded-2xl bg-white px-6 py-4 shadow-md shadow-gray-900/5 transition hover:shadow-lg hover:shadow-gray-900/10"
+          >
+            <svg class="h-8 w-8 fill-slate-600" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M6 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6Zm.245 2.187a.75.75 0 0 0-.99 1.126l6.25 5.5a.75.75 0 0 0 .99 0l6.25-5.5a.75.75 0 0 0-.99-1.126L12 12.251 6.245 7.187Z"/>
+            </svg>
+            <div class="flex-auto">
+              <p class="text-base font-semibold text-slate-900">Email</p>
+              <p class="text-sm text-slate-600">contact@boulderjs.org</p>
+            </div>
+          </a>
+        </div>
+      </div>
     </div>
-  </Container>
+  </section>
 </BaseLayout>

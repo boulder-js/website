@@ -1,131 +1,35 @@
-import { For, createSignal } from 'solid-js'
-import { A } from '@solidjs/router'
-
-const navItems = [
-  {
-    name: 'Home',
-    href: '/'
-  },
-  {
-    name: 'Events',
-    href: '/events'
-  },
-  {
-    name: 'Speakers',
-    href: '/speakers'
-  },
-  {
-    name: 'Participating Groups',
-    href: '/groups'
-  },
-  {
-    name: 'About',
-    href: '/about'
-  }
-]
+import { DiamondIcon } from './DiamondIcon'
 
 export function Header() {
-  const [menuOpen, setMenuOpen] = createSignal(false)
-
   return (
-    <header class="">
-      <nav
-        class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8 "
-        aria-label="Global"
-      >
-        <div class="flex flex-1">
-          <div class="hidden lg:flex lg:gap-x-12">
-            <For each={navItems}>
-              {(item) => (
-                <A
-                  href={item.href}
-                  class="text-sm font-semibold leading-6 text-gray-900 dark:text-zinc-400"
-                >
-                  {item.name}
-                </A>
-              )}
-            </For>
-          </div>
-          <div class="flex lg:hidden">
-            <button
-              type="button"
-              class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-              onClick={() => setMenuOpen(true)}
-            >
-              <span class="sr-only">Open main menu</span>
-              <svg
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                />
-              </svg>
-            </button>
+    <header class="relative z-50 flex-none lg:pt-11 bg-transparent">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-center sm:justify-between lg:flex-nowrap bg-transparent">
+        <div class="mt-10 lg:mt-0 lg:grow lg:basis-0">
+          <a href="/">
+            <span class="sr-only">BoulderJS</span>
+            <img
+              src="/assets/boulderjs-logo.png"
+              alt="BoulderJS Logo"
+              class="h-12 w-auto"
+            />
+          </a>
+        </div>
+        <div class="order-first -mx-4 flex flex-auto basis-full overflow-x-auto border-b border-blue-600/10 py-4 font-mono text-sm whitespace-nowrap text-blue-600 sm:-mx-6 lg:order-none lg:mx-0 lg:basis-auto lg:border-0 lg:py-0">
+          <div class="mx-auto flex items-center gap-4 px-4">
+            <p>Every 4th Thursday</p>
+            <DiamondIcon class="h-1.5 w-1.5 overflow-visible fill-current stroke-current" />
+            <p>Boulder, CO</p>
           </div>
         </div>
-        <A href="/" class="-m-1.5 p-1.5">
-          <span class="sr-only">BoulderJS</span>
-          <img
-            src="/assets/boulderjs-logo.png"
-            width="100%"
-            height="100%"
-            class="w-24 h-24"
-          />
-        </A>
-        <div class="flex flex-1 justify-end" />
-      </nav>
-      <div
-        class={menuOpen() ? 'lg:hidden' : 'hidden'}
-        role="dialog"
-        aria-modal="true"
-      >
-        <div class="fixed inset-0 z-10" />
-        <div class="fixed inset-y-0 left-0 z-10 w-full overflow-y-auto bg-white px-6 py-6">
-          <div class="flex items-center justify-between">
-            <div class="flex flex-1">
-              <button
-                type="button"
-                class="-m-2.5 rounded-md p-2.5 text-gray-700"
-                onClick={() => setMenuOpen(false)}
-              >
-                <span class="sr-only">Close menu</span>
-                <svg
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div class="flex flex-1 justify-end" />
-          </div>
-          <div class="mt-6 space-y-2">
-            <For each={navItems}>
-              {(item) => (
-                <A
-                  href={item.href}
-                  class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 dark:text-zinc-400"
-                >
-                  {item.name}
-                </A>
-              )}
-            </For>
-          </div>
+        <div class="hidden sm:mt-10 sm:flex lg:mt-0 lg:grow lg:basis-0 lg:justify-end">
+          <a
+            href="https://lu.ma/boulderjs"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex justify-center rounded-2xl bg-blue-600 px-4 py-2.5 text-base font-semibold text-white hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:text-white/70 transition-colors"
+          >
+            Get your tickets
+          </a>
         </div>
       </div>
     </header>
