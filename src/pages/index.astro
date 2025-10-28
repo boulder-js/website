@@ -1,12 +1,9 @@
 ---
-// Pre-render this page at build time (not on-demand)
-export const prerender = true
-
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { BackgroundImage } from '../components/BackgroundImage'
 import { fetchUpcomingEvents, fetchPastEvents, getSpeakers, fetchTeamMembers } from '../lib/events.js'
 
-// Build-time data fetching using gitevents-fetch
+// Server-side data fetching using gitevents-fetch
 let events = []
 let pastEvents = []
 let speakers = []
