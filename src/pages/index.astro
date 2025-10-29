@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { BackgroundImage } from '../components/BackgroundImage'
-import { fetchUpcomingEvents, fetchPastEvents, getSpeakers, fetchTeamMembers } from '../lib/events.js'
+import { fetchUpcomingEvents, fetchPastEvents, getSpeakers, fetchTeamMembers, fetchOrganization } from '../lib/events.js'
 
 // Server-side data fetching using gitevents-fetch
 let events = []
@@ -9,6 +9,7 @@ let pastEvents = []
 let speakers = []
 let advocates = []
 let members = []
+let orgData = null
 
 try {
   // Fetch from GitHub using gitevents-fetch package
@@ -17,7 +18,8 @@ try {
   speakers = getSpeakers(events)
   advocates = await fetchTeamMembers('boulder-js', 'advocates')
   members = await fetchTeamMembers('boulder-js', 'members')
-  console.log(`Fetched ${events.length} upcoming events, ${pastEvents.length} past events, ${speakers.length} speakers, ${advocates.length} advocates, and ${members.length} members`)
+  orgData = await fetchOrganization('boulder-js')
+  console.log(`Fetched ${events.length} upcoming events, ${pastEvents.length} past events, ${speakers.length} speakers, ${advocates.length} advocates, ${members.length} members, and org data`)
 } catch (error) {
   console.error('Failed to fetch events:', error)
 }
@@ -66,6 +68,22 @@ try {
               Boulder, CO
             </dd>
           </div>
+          {orgData?.memberCount && (
+            <div>
+              <dt class="font-mono text-sm text-blue-600">Community Members</dt>
+              <dd class="mt-0.5 text-2xl font-semibold tracking-tight text-blue-900">
+                {orgData.memberCount}
+              </dd>
+            </div>
+          )}
+          {pastEvents.length > 0 && (
+            <div>
+              <dt class="font-mono text-sm text-blue-600">Past Events</dt>
+              <dd class="mt-0.5 text-2xl font-semibold tracking-tight text-blue-900">
+                {pastEvents.length}+
+              </dd>
+            </div>
+          )}
         </dl>
       </div>
     </div>
