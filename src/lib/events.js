@@ -2,7 +2,7 @@
  * Events fetching using gitevents-fetch package
  * Wraps gitevents-fetch and transforms data for the UI
  */
-import { upcomingEvents as getUpcomingEvents, pastEvents as getPastEvents, getTeam as getTeamMembers } from 'gitevents-fetch'
+import { upcomingEvents as getUpcomingEvents, pastEvents as getPastEvents, getTeam as getTeamMembers, getOrganization } from 'gitevents-fetch'
 
 /**
  * Transform event data from gitevents-fetch to UI format
@@ -119,5 +119,18 @@ export async function fetchTeamMembers(org, teamSlug) {
   } catch (error) {
     console.error(`Error fetching team ${teamSlug}:`, error)
     return []
+  }
+}
+
+/**
+ * Fetch organization data from GitHub
+ */
+export async function fetchOrganization(org) {
+  try {
+    const orgData = await getOrganization(org)
+    return orgData
+  } catch (error) {
+    console.error(`Error fetching organization ${org}:`, error)
+    return null
   }
 }

@@ -53,7 +53,7 @@
     "@astrojs/solid-js": "^5.1.2",
     "@zentered/issue-forms-body-parser": "^2.2.0",
     "astro": "^5.15.2",
-    "gitevents-fetch": "^0.0.3",
+    "gitevents-fetch": "^1.4.0",
     "solid-js": "^1.9.10"
   },
   "devDependencies": {
