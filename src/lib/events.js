@@ -2,7 +2,12 @@
  * Events fetching using gitevents-fetch package
  * Wraps gitevents-fetch and transforms data for the UI
  */
-import { upcomingEvents as getUpcomingEvents, pastEvents as getPastEvents, getTeam as getTeamMembers, getOrganization } from 'gitevents-fetch'
+import {
+  upcomingEvents as getUpcomingEvents,
+  pastEvents as getPastEvents,
+  getTeam as getTeamMembers,
+  getOrganization
+} from 'gitevents-fetch'
 
 /**
  * Transform event data from gitevents-fetch to UI format
@@ -13,15 +18,21 @@ function transformEvent(event) {
 
   // Transform talks to speakers format
   // Use GitHub user's display name, fallback to username
-  const speakers = event.talks?.map((talk) => ({
-    name: talk.author?.name || talk.author?.login || 'TBA',
-    login: talk.author?.login,
-    githubUrl: talk.author?.login ? `https://github.com/${talk.author.login}` : null,
-    talk: talk.title,
-    url: talk.url,
-    avatarUrl: talk.author?.avatarUrl,
-    abstract: talk.facets?.['talk-abstract']?.text || talk.facets?.['talk-description']?.text || talk.body?.substring(0, 200)
-  })) || []
+  const speakers =
+    event.talks?.map((talk) => ({
+      name: talk.author?.name || talk.author?.login || 'TBA',
+      login: talk.author?.login,
+      githubUrl: talk.author?.login
+        ? `https://github.com/${talk.author.login}`
+        : null,
+      talk: talk.title,
+      url: talk.url,
+      avatarUrl: talk.author?.avatarUrl,
+      abstract:
+        talk.facets?.['talk-abstract']?.text ||
+        talk.facets?.['talk-description']?.text ||
+        talk.body?.substring(0, 200)
+    })) || []
 
   return {
     id: event.number.toString(),
@@ -127,8 +138,7 @@ export async function fetchTeamMembers(org, teamSlug) {
  */
 export async function fetchOrganization(org) {
   try {
-    const orgData = await getOrganization(org)
-    return orgData
+    return await getOrganization(org)
   } catch (error) {
     console.error(`Error fetching organization ${org}:`, error)
     return null
