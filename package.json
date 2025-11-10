@@ -62,7 +62,7 @@
     "@solidjs/testing-library": "^0.8.10",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.16",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.22",
     "clsx": "^2.1.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.6",
