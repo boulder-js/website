@@ -49,7 +49,7 @@
     ]
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.10",
+    "@astrojs/cloudflare": "^12.6.11",
     "@astrojs/solid-js": "^5.1.2",
     "@zentered/issue-forms-body-parser": "^2.2.0",
     "astro": "^5.15.2",
