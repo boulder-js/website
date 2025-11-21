@@ -41,16 +41,24 @@ function transformEvent(event) {
 
 /**
  * Fetch upcoming events with speakers
+ * Events on today or in the future are considered "upcoming"
  */
 export async function fetchUpcomingEvents() {
   try {
     const events = await getUpcomingEvents('boulder-js', 'events')
 
-    // Filter for future events only
+    // Filter for future or today's events (compare dates only, not time)
     const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
     const filteredEvents = events
       .map(transformEvent)
-      .filter((event) => event.date && event.date >= now)
+      .filter((event) => {
+        if (!event.date) return false
+        // Compare dates only, not time - events on today or later are considered upcoming
+        const eventDay = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate())
+        return eventDay >= today
+      })
 
     return filteredEvents
   } catch (error) {
@@ -60,18 +68,38 @@ export async function fetchUpcomingEvents() {
 }
 
 /**
- * Fetch past events (closed events)
+ * Fetch past events (closed events AND open events that have passed)
  */
 export async function fetchPastEvents() {
   try {
-    const events = await getPastEvents('boulder-js', 'events')
+    // Get closed events
+    const closedEvents = await getPastEvents('boulder-js', 'events')
 
-    // Transform events
-    const filteredEvents = events
+    // Also get open events that have passed (date is before today)
+    const openEvents = await getUpcomingEvents('boulder-js', 'events')
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    const pastOpenEvents = openEvents
       .map(transformEvent)
-      .filter((event) => event.date)
+      .filter((event) => {
+        if (!event.date) return false
+        const eventDay = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate())
+        return eventDay < today
+      })
 
-    return filteredEvents
+    // Combine closed events and past open events
+    const allPastEvents = [
+      ...closedEvents.map(transformEvent).filter((event) => event.date),
+      ...pastOpenEvents
+    ]
+
+    // Remove duplicates based on id and sort by date descending
+    const uniqueEvents = Array.from(
+      new Map(allPastEvents.map(event => [event.id, event])).values()
+    ).sort((a, b) => b.date - a.date)
+
+    return uniqueEvents
   } catch (error) {
     console.error('Error fetching past events:', error)
     return []
