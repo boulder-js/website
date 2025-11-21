@@ -21,5 +21,4 @@ dist
 .dev.vars
 .claude
 keynote-js/
-.astro
 .playwright-mcp
