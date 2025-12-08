@@ -57,7 +57,7 @@
     "solid-js": "^1.9.10"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/config-conventional": "^20.2.0",
     "@playwright/test": "^1.56.1",
     "@solidjs/testing-library": "^0.8.10",
     "@tailwindcss/typography": "^0.5.19",
